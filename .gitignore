@@ -1,0 +1,11 @@
+HEAD
+src
+latest
+v*
+alias
+
+*~
+*.swp
+*.swo
+*.swn
+*.swm
