@@ -53,12 +53,14 @@ dvm() {
         echo 'DVM Needs curl to proceed.' >&2;
       fi
 
+      [ -d "$DVM_DIR/$VERSION" ] && echo "$VERSION is already installed." && return
+
       VERSION=`dvm_version $2`
       ADDITIONAL_PARAMETERS=''
       # Architectura 32-bit or 64-bit
       echo $VERSION
-      if [ "`curl -Is "http://commondatastorage.googleapis.com/dart-editor-archive-integration/$VERSION/dartsdk-linux-$arch.tar.gz" | grep '200 OK'`" != '' ]; then
-        tarball="http://commondatastorage.googleapis.com/dart-editor-archive-integration/$VERSION/dartsdk-linux-$arch.tar.gz"
+      if [ "`curl -Is "http://commondatastorage.googleapis.com/dart-editor-archive-integration/$VERSION/dartsdk-$os-$arch.tar.gz" | grep '200 OK'`" != '' ]; then
+        tarball="http://commondatastorage.googleapis.com/dart-editor-archive-integration/$VERSION/dartsdk-$os-$arch.tar.gz"
       fi
 
       if (
@@ -76,7 +78,7 @@ dvm() {
           cd "$DVM_DIR/$VERSION"
         )
       then
-        echo "Dart installed"
+        dvm use $VERSION
       fi
     ;;
     "uninstall" )
