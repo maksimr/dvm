@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+#before
+if [ -d "$DVM_DIR" ]; then
+  _DVM_DIR=$DVM_DIR
+  export DVM_DIR=''
+fi
+
+#load dvm script
+. ../../dvm.sh
+
+revision=$(dvm ls-remote | sort -R | tail -n 1)
+
+# Remove the stuff we're clobbering.
+[ -e ../../r${revision} ] && rm -R ../../r${revision}
+
+dvm install ${revision}
+dvm uninstall ${revision}
+
+out=
+if [ ! -d ../../r${revision} ]
+then
+  out=1
+fi
+
+#after
+if [ -z "$_DVM_DIR" ]; then
+  export DVM_DIR=$_DVM_DIR
+fi
+
+echo $out

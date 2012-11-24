@@ -1,0 +1,21 @@
+#!/bin/bash
+
+set -e
+
+#before
+if [ -d "$DVM_DIR" ]; then
+  _DVM_DIR=$DVM_DIR
+  export DVM_DIR=''
+fi
+
+#load dvm script
+. ../../dvm.sh
+
+out=$(dvm ls-remote | grep '15042')
+
+#after
+if [ -z "$_DVM_DIR" ]; then
+  export DVM_DIR=$_DVM_DIR
+fi
+
+echo $out

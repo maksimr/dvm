@@ -17,14 +17,14 @@ Often I also put in a line to use a specific version of dart.
 
 ## Usage
 
-To download and install the latest version of dart, do this:
+To download and install the 15042 revision of dart, do this:
 
-    dvm install latest
+    dvm install 15042
 
 
 And then in any new shell just use the installed version:
 
-    dvm use latest
+    dvm use 15042
 
 If you want to see what versions are available:
 

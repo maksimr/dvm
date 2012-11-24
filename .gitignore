@@ -3,6 +3,7 @@ src
 latest
 v*
 alias
+.revisions
 
 *~
 *.swp
