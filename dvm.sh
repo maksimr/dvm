@@ -46,7 +46,6 @@ dvm_check() {
 # general function
 dvm() {
     local cmd="$1"
-    local args=$@
     local sdk_path="https://gsdview.appspot.com/dart-editor-archive-integration"
     local system=$(dvm_check system)
 
@@ -81,49 +80,49 @@ dvm() {
 
         "install")
             dvm_check 'curl'
-            local version="$2"
+            VERSION="$2"
             local tarball=''
             local src_dir="$DVM_DIR/src"
 
-            if [ -d "$DVM_DIR/r${version}" ]
+            if [ -d "$DVM_DIR/r${VERSION}" ]
             then
-                echo "Dart(${version}) is already installed!"
+                echo "Dart(${VERSION}) is already installed!"
                 return
             fi
 
-            local tarball="http://commondatastorage.googleapis.com/dart-editor-archive-integration/${version}/dartsdk-${system}.tar.gz"
+            local tarball="http://commondatastorage.googleapis.com/dart-editor-archive-integration/${VERSION}/dartsdk-${system}.tar.gz"
 
             if [ "`curl -Is "${tarball}" | grep '200 OK'`" = '' ];
             then
-                echo "Dart(${version}) doesn't exist on remote server!  You can use option remote_version"
+                echo "Dart(${VERSION}) doesn't exist on remote server!  You can use option remote_version"
                 return
             fi
 
             if (
                 mkdir -p "$src_dir" && \
                     cd "$src_dir" && \
-                    curl -C - --progress-bar $tarball -o "dart-$version.tar.gz" && \
-                    mkdir -p "$DVM_DIR/r$version" && \
-                    tar -xzf "dart-$version.tar.gz" -C "$DVM_DIR/r${version}" --strip-components 1 && \
-                    rm -f "dart-$version.tar.gz" 2>/dev/null && \
-                    cd "$DVM_DIR/r$version"
+                    curl -C - --progress-bar $tarball -o "dart-$VERSION.tar.gz" && \
+                    mkdir -p "$DVM_DIR/r$VERSION" && \
+                    tar -xzf "dart-$VERSION.tar.gz" -C "$DVM_DIR/r${VERSION}" --strip-components 1 && \
+                    rm -f "dart-$VERSION.tar.gz" 2>/dev/null && \
+                    cd "$DVM_DIR/r$VERSION"
                 )
             then
-                echo "dvm: install dart-$version successfully!"
+                echo "dvm: install dart-$VERSION successfully!"
             else
-                echo "dvm: install $version failed!"
+                echo "dvm: install $VERSION failed!"
             fi
             ;;
         "uninstall" )
-            local version="$2"
-            if [ ! -d "$DVM_DIR/r$version" ]; then
-                echo "$version version is not installed yet"
+            VERSION="$2"
+            if [ ! -d "$DVM_DIR/r$VERSION" ]; then
+                echo "$VERSION version is not installed yet"
                 return;
             fi
 
-            rm -rf "$DVM_DIR/r$version" 2>/dev/null
+            rm -rf "$DVM_DIR/r$VERSION" 2>/dev/null
 
-            echo "Uninstalled dart $version"
+            echo "Uninstalled dart $VERSION"
             ;;
         "ls" | "list" )
             local d
@@ -142,33 +141,33 @@ dvm() {
                 return
             fi
 
-            local version="$2"
+            VERSION="$2"
 
-            if [ ! -d $DVM_DIR/r$version ]; then
-                echo "$version version is not installed yet"
+            if [ ! -d $DVM_DIR/r$VERSION ]; then
+                echo "$VERSION version is not installed yet"
                 return;
             fi
-            echo "Running dart $version"
-            $DVM_DIR/r$version/bin/dart "${@:3}"
+            echo "Running dart $VERSION"
+            $DVM_DIR/r$VERSION/bin/dart "${@:3}"
             ;;
         "use" )
-            local version="$2"
-            if [ ! -d $DVM_DIR/$version ]; then
-                echo "$version version is not installed yet"
+            VERSION="$2"
+            if [ ! -d $DVM_DIR/$VERSION ]; then
+                echo "$VERSION version is not installed yet"
                 return;
             fi
 
             if [[ $PATH == *$DVM_DIR/*/bin* ]]; then
-                PATH=${PATH%$DVM_DIR/*/bin*}$DVM_DIR/r$version/bin${PATH#*$DVM_DIR/*/bin}
+                PATH=${PATH%$DVM_DIR/*/bin*}$DVM_DIR/r$VERSION/bin${PATH#*$DVM_DIR/*/bin}
             else
-                PATH="$DVM_DIR/r$version/bin:$PATH"
+                PATH="$DVM_DIR/r$VERSION/bin:$PATH"
             fi
 
             export PATH
 
             hash -r
-            export DVM_BIN="$DVM_DIR/r$version/bin"
-            echo "Now using dart $version"
+            export DVM_BIN="$DVM_DIR/r$VERSION/bin"
+            echo "Now using dart $VERSION"
             ;;
         * )
             dvm help
