@@ -152,7 +152,7 @@ dvm() {
             ;;
         "use" )
             VERSION="$2"
-            if [ ! -d $DVM_DIR/$VERSION ]; then
+            if [ ! -d $DVM_DIR/r$VERSION ]; then
                 echo "$VERSION version is not installed yet"
                 return;
             fi
