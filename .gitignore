@@ -2,6 +2,7 @@ HEAD
 src
 latest
 v*
+r*
 alias
 .revisions
 

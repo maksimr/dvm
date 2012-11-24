@@ -130,7 +130,7 @@ dvm() {
             do
                 if [ -d "$d" ]
                 then
-                    echo "${d##r}"
+                    echo "$(basename ${d##*r})"
                 fi
             done
             ;;
