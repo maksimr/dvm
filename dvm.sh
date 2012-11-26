@@ -75,7 +75,7 @@ print_versions()
 {
     local OUTPUT=''
     local PADDED_VERSION=''
-    for VERSION in $1; do
+    for VERSION in $@; do
         PADDED_VERSION=`printf '%10s' $VERSION`
         if [[ -d "$DVM_DIR/$VERSION" ]]; then
             PADDED_VERSION="\033[0;34m$PADDED_VERSION\033[0m"
@@ -154,6 +154,7 @@ dvm() {
             dvm_check 'curl'
             local DART_URI='http://commondatastorage.googleapis.com/dart-editor-archive-integration/'
             local DVM_CACHE_DIR="$DVM_DIR/.cache"
+            local VERSIONS
 
             #if cache directory doesn't exist create it
             if [ ! -d "$DVM_CACHE_DIR" ]
@@ -165,9 +166,9 @@ dvm() {
             egrep -o '[0-9].[0-9](.[0-9])?.r[0-9]+' | # regexp {VERSION}.r{REVISION}
             sort -t. -u -V --output="$DVM_CACHE_DIR/.version"
 
-            cat "$DVM_CACHE_DIR/.version" |
+            print_versions $(cat "$DVM_CACHE_DIR/.version" |
             egrep -o '[0-9]\.[0-9](\.[0-9])?' |
-            xargs -I{} echo v{}
+            xargs -I{} echo v{})
             ;;
 
         "install")
@@ -219,7 +220,7 @@ dvm() {
             echo "Uninstalled dart $VERSION"
             ;;
         "ls" | "list" )
-            print_versions "`dvm_ls $2`"
+            print_versions $(dvm_ls $2)
             if [ $# -eq 1 ]; then
                 echo -ne "current: \t"; dvm_version current
                 dvm alias
