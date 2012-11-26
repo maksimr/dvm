@@ -15,16 +15,17 @@ VERSION=$(dvm ls-remote | sort -R | tail -n 1)
 h remove_directory $VERSION
 
 dvm install "$VERSION"
-dvm uninstall "$VERSION"
+dvm use "$VERSION"
+dvm deactivate "$VERSION"
 
-out=
-if [ ! -d ../../${VERSION} ]
+out=1
+if [ "$(command -v dart)" ]
 then
-  out=1
+  out=
 fi
 
 #after
 h remove_directory "$VERSION"
 h_after
 
-[ "$out" ]
+[ $out ]

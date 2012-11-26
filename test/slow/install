@@ -1,33 +1,29 @@
 #!/bin/bash
 
 set -e
+#load helper functions
+source helper
 
-#before
-if [ -d "$DVM_DIR" ]; then
-  _DVM_DIR=$DVM_DIR
-  export DVM_DIR=''
-fi
+h_before
 
 #load dvm script
 . ../../dvm.sh
 
-revision=$(dvm ls-remote | sort -R | tail -n 1)
+VERSION=$(dvm ls-remote | sort -R | tail -n 1)
 
 # Remove the stuff we're clobbering.
-[ -e ../../r${revision} ] && rm -R ../../r${revision}
+h remove_directory "$VERSION"
 
-dvm install ${revision}
+dvm install "$VERSION"
 
 out=
-if [ -d ../../r${revision} ]
+if [ -d ../../${VERSION} ]
 then
   out=1
 fi
 
 #after
-[ -e ../../r${revision} ] && rm -R ../../r${revision}
-if [ -z "$_DVM_DIR" ]; then
-  export DVM_DIR=$_DVM_DIR
-fi
+h remove_directory "$VERSION"
+h_after
 
-echo $out
+[ "$out" ]

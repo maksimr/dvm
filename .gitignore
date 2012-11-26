@@ -1,10 +1,9 @@
 HEAD
-src
 latest
 v*
-r*
+tmp
 alias
-.revisions
+.cache
 
 *~
 *.swp

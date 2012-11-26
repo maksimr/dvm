@@ -1,0 +1,9 @@
+
+alias passed
+deactivate passed
+install passed
+ls passed
+remote_version passed
+run passed
+unalias passed
+uninstall passed

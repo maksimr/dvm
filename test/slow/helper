@@ -1,0 +1,37 @@
+#!/bin/bash
+#Helpers function for tasting
+
+h_before(){
+  #save and unset some variables
+  #for testing
+  if [ -d "$DVM_DIR" ]; then
+    _DVM_DIR=$DVM_DIR
+    export DVM_DIR=''
+  fi
+}
+
+h_after(){
+  if [ -z "$_DVM_DIR" ]; then
+    export DVM_DIR=$_DVM_DIR
+  fi
+}
+#vim:set filetype=sh
+
+h() {
+
+  case "$1" in
+    "before" )
+      h_before
+      ;;
+    "after" )
+      h_after
+      ;;
+    "remove_directory" )
+      if [ -d ../../$2 ]
+      then
+        rm -R ../../$2
+      fi
+      ;;
+  esac
+
+}
