@@ -78,11 +78,11 @@ print_versions()
     for VERSION in $@; do
         PADDED_VERSION=`printf '%10s' $VERSION`
         if [[ -d "$DVM_DIR/$VERSION" ]]; then
-            PADDED_VERSION="\033[0;34m$PADDED_VERSION\033[0m"
+            PADDED_VERSION="\033[0;32m$PADDED_VERSION\033[0m"
         fi
         OUTPUT="$OUTPUT\n$PADDED_VERSION"
     done
-    echo -e "$OUTPUT" | column
+    echo -e "$OUTPUT"
 }
 
 # check dependencies
