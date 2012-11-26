@@ -5,6 +5,7 @@ tmp
 alias
 .cache
 
+test/.urchin.log
 *~
 *.swp
 *.swo

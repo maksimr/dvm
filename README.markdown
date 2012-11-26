@@ -1,5 +1,7 @@
 # Dart Version Manager
 
+Dart Version Manager based on [nvm](https://github.com/creationix/nvm)
+
 ## Installation
 
 To install create a folder somewhere in your filesystem with the "`dvm.sh`" file inside it.  I put mine in a folder called "`.dvm`".
@@ -17,22 +19,33 @@ Often I also put in a line to use a specific version of dart.
 
 ## Usage
 
-To download and install the 15042 revision of dart, do this:
+To download and install the v0.2.0 release of dart, do this:
 
-    dvm install 15042
-
+    dvm install 0.2.0
 
 And then in any new shell just use the installed version:
 
-    dvm use 15042
+    dvm use 0.2.0
+
+Or you can just run it:
+
+    dvm run 0.2.0
 
 If you want to see what versions are available:
 
     dvm ls
 
+If you want to see what remote versions are available:
+
+    dvm ls-remote
+
 To restore your PATH, you can deactivate it.
 
     dvm deactivate
+
+To set a default Dart version to be used in any new shell, use the alias 'default':
+
+    dvm alias default 0.2.0
 
 ## Running tests
 Tests are written in [Urchin](http://www.urchin.sh). Install Urchin like so.

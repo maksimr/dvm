@@ -124,6 +124,7 @@ dvm_check() {
 dvm() {
     local ACTION="$1"
     local SYSTEM=$(dvm_check system)
+    local DVM_VERSION="0.0.1"
 
     #process arguments
     case "$ACTION" in
@@ -145,6 +146,9 @@ dvm() {
             echo "    dvm alias <name> <version>  Set an alias named <name> pointing to <version>"
             echo "    dvm unalias <name>          Deletes the alias named <name>"
             echo
+            ;;
+        "--version" | "-v" )
+            echo "v${DVM_VERSION}"
             ;;
         "ls-remote")
             dvm_check 'curl'
