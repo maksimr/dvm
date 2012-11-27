@@ -71,6 +71,53 @@ dvm_ls() {
     return
 }
 
+dvm_remote_version()
+{
+    local PATTERN=$1
+    VERSION=`dvm_ls_remote $PATTERN | tail -n1`
+    echo "$VERSION"
+
+    if [ "$VERSION" = 'N/A' ]; then
+        return
+    fi
+}
+
+dvm_ls_remote(){
+    local PATTERN=$1
+    if [ "$PATTERN" ]; then
+        if echo "${PATTERN}" | grep -v '^v' ; then
+            PATTERN=v$PATTERN
+        fi
+    else
+        PATTERN=".*"
+    fi
+
+    local DART_URI='http://commondatastorage.googleapis.com/dart-editor-archive-integration/'
+    local DVM_CACHE_DIR="$DVM_DIR/.cache"
+
+    #if cache directory doesn't exist create it
+    if [ ! -d "$DVM_CACHE_DIR" ]
+    then
+        mkdir -p "$DVM_CACHE_DIR"
+    fi
+
+    curl -s $DART_URI |
+    egrep -o '[0-9].[0-9](.[0-9])?.r[0-9]+' | # regexp {VERSION}.r{REVISION}
+    sort -t. -u -V --output="$DVM_CACHE_DIR/.version"
+
+    local VERSIONS=$(cat "$DVM_CACHE_DIR/.version" |
+    egrep -o '[0-9]\.[0-9](\.[0-9])?' |
+    xargs -I{} echo v{} |
+    grep -w "${PATTERN}"
+    )
+
+    if [ ! "$VERSIONS" ]; then
+        echo "N/A"
+        return
+    fi
+    echo "$VERSIONS"
+}
+
 print_versions()
 {
     local OUTPUT=''
@@ -171,30 +218,13 @@ dvm() {
 
             cd current_path
             ;;
-        "ls-remote")
-            dvm_check 'curl'
-            local DART_URI='http://commondatastorage.googleapis.com/dart-editor-archive-integration/'
-            local DVM_CACHE_DIR="$DVM_DIR/.cache"
-            local VERSIONS
-
-            #if cache directory doesn't exist create it
-            if [ ! -d "$DVM_CACHE_DIR" ]
-            then
-                mkdir -p "$DVM_CACHE_DIR"
-            fi
-
-            curl -s $DART_URI |
-            egrep -o '[0-9].[0-9](.[0-9])?.r[0-9]+' | # regexp {VERSION}.r{REVISION}
-            sort -t. -u -V --output="$DVM_CACHE_DIR/.version"
-
-            print_versions $(cat "$DVM_CACHE_DIR/.version" |
-            egrep -o '[0-9]\.[0-9](\.[0-9])?' |
-            xargs -I{} echo v{})
+        "ls-remote" | "list-remote" )
+            print_versions "`dvm_ls_remote $2`"
+            return
             ;;
-
         "install")
             dvm_check 'curl'
-            VERSION=$(dvm_version $2) #VERSION
+            VERSION="$(dvm_remote_version $2)"
             local REVISION=$(dvm_revision $VERSION) #get revision by version
             local DART_URI='http://commondatastorage.googleapis.com/dart-editor-archive-integration'
 
