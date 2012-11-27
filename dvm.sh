@@ -84,9 +84,11 @@ dvm_remote_version()
 
 dvm_ls_remote(){
     local PATTERN=$1
-    if [ "$PATTERN" ]; then
+    local VERSIONS=''
+    if [ "$PATTERN" ];
+    then
         if echo "${PATTERN}" | grep -v '^v' ; then
-            PATTERN=v$PATTERN
+            PATTERN="v$PATTERN"
         fi
     else
         PATTERN=".*"
@@ -105,11 +107,10 @@ dvm_ls_remote(){
     egrep -o '[0-9].[0-9](.[0-9])?.r[0-9]+' | # regexp {VERSION}.r{REVISION}
     sort -t. -u -V --output="$DVM_CACHE_DIR/.version"
 
-    local VERSIONS=$(cat "$DVM_CACHE_DIR/.version" |
+    VERSIONS=$(cat "$DVM_CACHE_DIR/.version" |
     egrep -o '[0-9]\.[0-9](\.[0-9])?' |
     xargs -I{} echo v{} |
-    grep -w "${PATTERN}"
-    )
+    grep -w "${PATTERN}")
 
     if [ ! "$VERSIONS" ]; then
         echo "N/A"
@@ -171,7 +172,7 @@ dvm_check() {
 dvm() {
     local ACTION="$1"
     local SYSTEM=$(dvm_check system)
-    local DVM_VERSION="0.0.1"
+    local DVM_VERSION="0.0.2"
 
     #process arguments
     case "$ACTION" in
@@ -219,7 +220,7 @@ dvm() {
             cd current_path
             ;;
         "ls-remote" | "list-remote" )
-            print_versions "`dvm_ls_remote $2`"
+            print_versions $(dvm_ls_remote $2)
             return
             ;;
         "install")
