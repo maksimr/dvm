@@ -162,7 +162,7 @@ dvm() {
             echo
             echo 'Upgrading Dart Version Manager....'
 
-            if [ $(git pull origin master) ]
+            if [ "$(git pull origin master 2>/dev/null)" ]
             then
                 echo 'Dart Version Manager has been updated and/or is at the current version.'
             else
