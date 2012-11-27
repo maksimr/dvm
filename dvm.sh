@@ -44,7 +44,7 @@ dvm_ls() {
     VERSIONS=''
 
     if [ "$PATTERN" = 'current' ]; then
-        echo `dart --version 2>/dev/null` |
+        dart --version 2>&1 |
         egrep -o '[0-9]\.[0-9](\.[0-9])?' |
         xargs -I{} echo v{}
         return

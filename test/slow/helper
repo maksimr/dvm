@@ -30,9 +30,9 @@ h() {
       h_after
       ;;
     "remove_directory" )
-      if [ $2 -a -d ../../$2 ]
+      if [ "$2" -a -d "../../$2" ]
       then
-        rm -R ../../$2
+        rm -R "../../$2"
       fi
       ;;
   esac
