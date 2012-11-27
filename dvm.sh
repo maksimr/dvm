@@ -8,6 +8,25 @@ if [ ! -d "$DVM_DIR" ]; then
     export DVM_DIR=$(cd $(dirname ${BASH_SOURCE[0]:-$0}); pwd)
 fi
 
+# Rewrite default dart_analyzer script
+dart_analyzer(){
+    local STDIN="$@"
+
+    if [ ! "$DVM_SDK" ]
+    then
+        echo "Dart is not installed"
+        return
+    fi
+
+    if [ ! "$(echo $STDIN | grep -e '--dart-sdk')"  ]
+    then
+        STDIN="$STDIN --dart-sdk=${DVM_SDK}"
+    fi
+
+    $DVM_DIR/$VERSION/bin/dart_analyzer $STDIN
+    return;
+}
+
 # Expand a revision by version
 dvm_revision() {
     VERSION=${1##v} #VERSION
