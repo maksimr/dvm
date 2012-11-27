@@ -326,6 +326,9 @@ dvm() {
 
             hash -r
             export DVM_BIN="$DVM_DIR/$VERSION/bin"
+
+            export DVM_SDK="$DVM_DIR/$VERSION"
+            export DART_SDK="$DVM_DIR/$VERSION"
             echo "Now using dart $VERSION"
             ;;
         "deactivate" )
