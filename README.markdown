@@ -2,7 +2,7 @@
 
 ![Dartlang](https://raw.github.com/maksimr/dvm/master/dart-logo.png)
 
-Dart Version Manager based on [nvm](https://github.com/creationix/nvm)
+Dart Version Manager inspired by [nvm](https://github.com/creationix/nvm)
 
 ## Installation
 
