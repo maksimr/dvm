@@ -4,6 +4,8 @@
 h_before(){
   #save and unset some variables
   #for testing
+  _PATH=$PATH
+  export PATH='/usr/lib/lightdm/lightdm:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   if [ -d "$DVM_DIR" ]; then
     _DVM_DIR=$DVM_DIR
     export DVM_DIR=''
@@ -11,6 +13,7 @@ h_before(){
 }
 
 h_after(){
+  export PATH=$_PATH
   if [ -z "$_DVM_DIR" ]; then
     export DVM_DIR=$_DVM_DIR
   fi
@@ -27,7 +30,7 @@ h() {
       h_after
       ;;
     "remove_directory" )
-      if [ -d ../../$2 ]
+      if [ $2 -a -d ../../$2 ]
       then
         rm -R ../../$2
       fi

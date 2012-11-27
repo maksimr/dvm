@@ -134,6 +134,7 @@ dvm() {
             echo
             echo "Usage:"
             echo "    dvm help                    Show this message"
+            echo "    dvm version                 Show the dvm version"
             echo "    dvm install <version>       Download and install a <version>"
             echo "    dvm uninstall <version>     Uninstall a version"
             echo "    dvm use <version>           Modify PATH to use <version>"
@@ -147,7 +148,7 @@ dvm() {
             echo "    dvm unalias <name>          Deletes the alias named <name>"
             echo
             ;;
-        "--version" | "-v" )
+        "version" | "--version" | "-v" )
             echo "v${DVM_VERSION}"
             ;;
         "ls-remote")
