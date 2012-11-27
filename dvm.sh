@@ -103,7 +103,7 @@ dvm_check() {
                 Linux\ *)
                     os=linux ;;
                 Darwin\ *)
-                    os=darwin ;;
+                    os=macos ;;
                 SunOS\ *)
                     os=sunos ;;
             esac
