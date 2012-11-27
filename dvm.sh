@@ -23,7 +23,7 @@ dart_analyzer(){
         STDIN="$STDIN --dart-sdk=${DVM_SDK}"
     fi
 
-    $DVM_DIR/$VERSION/bin/dart_analyzer $STDIN
+    $DVM_SDK/bin/dart_analyzer $STDIN
     return;
 }
 
