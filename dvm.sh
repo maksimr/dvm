@@ -135,6 +135,8 @@ dvm() {
             echo "Usage:"
             echo "    dvm help                    Show this message"
             echo "    dvm version                 Show the dvm version"
+            echo "    dvm upgrade                 Upgrade dvm"
+            echo
             echo "    dvm install <version>       Download and install a <version>"
             echo "    dvm uninstall <version>     Uninstall a version"
             echo "    dvm use <version>           Modify PATH to use <version>"
@@ -150,6 +152,20 @@ dvm() {
             ;;
         "version" | "--version" | "-v" )
             echo "v${DVM_VERSION}"
+            ;;
+        "upgrade" )
+            local current_path=$(pwd)
+            echo '\033[0;34m%s\033[0m\n' "Upgrading Dart Version Manager"
+            cd $DVM_DIR
+
+            if [ $(git pull origin master) ]
+            then
+                echo '\033[0;34m%s\033[0m\n' 'Dart Version Manager has been updated and/or is at the current version.'
+            else
+                echo '\033[0;31m%s\033[0m\n' 'There was an error updating. Try again later?'
+            fi
+
+            cd current_path
             ;;
         "ls-remote")
             dvm_check 'curl'
@@ -210,7 +226,16 @@ dvm() {
             fi
             ;;
         "uninstall" )
+            local A
+
+            [ $# -ne 2 ] && dvm help && return
+            if [[ $2 == $(dvm_version) ]]; then
+                echo "dvm: Cannot uninstall currently-active dart version, $2."
+                return
+            fi
+
             VERSION=$(dvm_version $2) #VERSION
+
             if [ ! -d "$DVM_DIR/$VERSION" ]; then
                 echo "$VERSION is not installed yet"
                 return;
@@ -219,6 +244,11 @@ dvm() {
             rm -rf "$DVM_DIR/$VERSION" 2>/dev/null
 
             echo "Uninstalled dart $VERSION"
+
+            for A in `grep -l $VERSION $DVM_DIR/alias/*`
+            do
+                dvm unalias `basename $A`
+            done
             ;;
         "ls" | "list" )
             print_versions $(dvm_ls $2)
