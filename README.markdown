@@ -1,6 +1,6 @@
 # Dart Version Manager
 
-![Dartlang](https://github.com/maksimr/dvm/dart-logo.png)
+![Dartlang](https://raw.github.com/maksimr/dvm/master/dart-logo.png)
 
 Dart Version Manager based on [nvm](https://github.com/creationix/nvm)
 
