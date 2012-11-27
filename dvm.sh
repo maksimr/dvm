@@ -1,7 +1,7 @@
 # Dart Version Manager
 # Implemented as a bash function
 # To use source this file from your bash profile
-# Based on nvm source code
+# Inspired by nvm
 
 # Auto detect the DVM_DIR
 if [ ! -d "$DVM_DIR" ]; then
@@ -155,14 +155,18 @@ dvm() {
             ;;
         "upgrade" )
             local current_path=$(pwd)
-            echo '\033[0;34m%s\033[0m\n' "Upgrading Dart Version Manager"
             cd $DVM_DIR
+
+            echo
+            cat dart-logo
+            echo
+            echo 'Upgrading Dart Version Manager....'
 
             if [ $(git pull origin master) ]
             then
-                echo '\033[0;34m%s\033[0m\n' 'Dart Version Manager has been updated and/or is at the current version.'
+                echo 'Dart Version Manager has been updated and/or is at the current version.'
             else
-                echo '\033[0;31m%s\033[0m\n' 'There was an error updating. Try again later?'
+                echo '\033[0;31m There was an error updating. Try again later? \033[0m\n'
             fi
 
             cd current_path
