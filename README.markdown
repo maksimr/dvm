@@ -57,12 +57,6 @@ Tests are written in [Urchin](http://www.urchin.sh). Install Urchin like so.
 
 (Or put it some other place in your PATH.)
 
-There are slow tests and fast tests. The slow tests do things like install dart
-and check that the right versions are used. From the root of the dvm git repository,
-run the slow tests like this.
+Run the slow tests like this.
 
     urchin test/slow
-
-Run all of the tests like this
-
-    urchin test
