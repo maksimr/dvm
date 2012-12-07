@@ -78,7 +78,7 @@ dvm_ls() {
     if [[ "$PATTERN" == v?*.?*.?* ]]; then
         VERSIONS="$PATTERN"
     else
-        VERSIONS=`(cd $DVM_DIR; \ls -d v${PATTERN}* 2>/dev/null) | sort -t. -u -V`
+        VERSIONS=`(cd $DVM_DIR; \ls -d v${PATTERN}* 2>/dev/null) | sort -t. -u`
     fi
 
     if [ ! "$VERSIONS" ]; then
@@ -124,7 +124,7 @@ dvm_ls_remote(){
 
     curl -s $DART_URI |
     egrep -o '[0-9].[0-9](.[0-9])?.r[0-9]+' | # regexp {VERSION}.r{REVISION}
-    sort -t. -u -V --output="$DVM_CACHE_DIR/.version"
+    sort -t. -u --output="$DVM_CACHE_DIR/.version"
 
     VERSIONS=$(cat "$DVM_CACHE_DIR/.version" |
     egrep -o '[0-9]\.[0-9](\.[0-9])?' |
