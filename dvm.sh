@@ -10,7 +10,7 @@ fi
 
 # Rewrite default dart_analyzer script
 dart_analyzer(){
-    local STDIN="$@"
+    ARGS="$@"
 
     if [ ! "$DVM_SDK" ]
     then
@@ -18,12 +18,13 @@ dart_analyzer(){
         return
     fi
 
-    if [ ! "$(echo $STDIN | grep -e '--dart-sdk')"  ]
+    if [ ! "$(echo $ARGS | grep -e '--dart-sdk')"  ]
     then
-        STDIN="$STDIN --dart-sdk=${DVM_SDK}"
+        ARGS="$ARGS --dart-sdk=${DVM_SDK}"
     fi
 
-    $DVM_SDK/bin/dart_analyzer $STDIN
+    $DVM_SDK/bin/dart_analyzer $ARGS
+    unset ARGS
     return;
 }
 
