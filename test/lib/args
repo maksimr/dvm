@@ -1,0 +1,15 @@
+#!/usr/bin/env bats
+source ./lib/args.bash
+source ./node_modules/bats-assert/src/assert.bash
+
+@test "should get argument" {
+  run args "foo" "--bar=barValue" "--foo=fooValue" "--zoo=zooValue"
+    assert_success
+    assert_equal "${lines[0]}" "fooValue"
+}
+
+@test "should return empty string if parameter was not passed" {
+  run args "foo" "--bar=barValue" "--zoo=zooValue"
+    assert_success
+    assert_equal "${lines[0]}" ""
+}

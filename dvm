@@ -1,0 +1,167 @@
+#!/usr/bin/env bash
+
+print-help() {
+  echo
+  echo "Dart Version Manager"
+  echo
+  echo "Usage:"
+  echo "    dvm help                    Show this message"
+  echo "    dvm version                 Show the dvm version"
+  echo
+  echo "    dvm install <version>       Download and install a <version>"
+  echo "    --channel=(stable|dev)      "
+  echo "    dvm uninstall <version>     Uninstall a version"
+  echo "    dvm use <version>           Modify PATH to use <version>"
+  echo "    dvm ls                      List installed versions"
+  echo "    dvm ls-remote               List remote versions available for install"
+  echo
+}
+
+ls-remote() {
+  local channel="${1:-stable}"
+  local api_uri="https://www.googleapis.com/storage/v1/b/dart-archive/o"
+  local query="prefix=channels/$channel/release/&delimiter=/"
+  curl -s "$api_uri?$query" | \
+    grep "channels/$channel/release/" | \
+    sed -e "s@.*/$channel/release/@@;s@/.*@@" | \
+    grep -v "^[0-9]*$"
+}
+
+print-version() {
+  cat ./package.json | \
+    grep "version" | \
+    sed -E 's/.*:[  ]*"(.*)",?/\1/'
+}
+
+install() {
+  local version="$1"
+  if [[ -z "$version" ]]; then
+    print-error "Version is required (dvm install <version>)"
+    return 1
+  fi
+
+  local tmpdir=$(mktemp -d)
+  pushd $tmpdir > /dev/null
+
+  local sdk_archive=$(sdk-archive-name)
+  for channel in "stable" "dev"; do
+    download-sdk $version $channel $sdk_archive && break
+  done
+
+  local download_exit_status=$?
+  if [[ $download_exit_status -ne 0 ]]; then
+    print-error "Cannot download Dart SDK"
+    popd > /dev/null
+    rm -rf -- "$tmpdir"
+    return $download_exit_status;
+  fi
+
+  unzip $sdk_archive
+
+  local dir=$(sdk-directory $version)
+  if [[ ! -d "$(dirname $dir)" ]]; then
+    mkdir -p $(dirname $dir)
+  elif [[ -d "$dir" ]]; then
+    rm -rf -- "$dir"
+  fi
+
+  move-dir dart-sdk $dir
+  popd > /dev/null
+  rm -rf -- "$tmpdir"
+  echo "Dart SDK $version successfully installed!"
+}
+
+move-dir() {
+  local target=$1
+  local dist=$2
+  mv $target $dist
+}
+
+require() {
+  source "$DVM_DIR/$1"
+}
+
+print-error() {
+  echo "ERROR: $@"
+}
+
+download-sdk() {
+  local version=$1
+  local channel=$2
+  local sdk_archive=$3
+  curl -f -O "https://storage.googleapis.com/dart-archive/channels/$channel/release/$version/sdk/$sdk_archive"
+}
+
+sdk-archive-name() {
+  local platform=$(os-platform)
+  local architecture=$(os-architecture)
+  echo dartsdk-$platform-$architecture-release.zip
+}
+
+sdk-directory() {
+  local version="${1:-}"
+  local dir=$(echo "$DVM_DIR/versions/dart-sdk/$1" | sed 's:/*$::')
+  echo $dir
+}
+
+use() {
+  local version=$1
+  local sdk_dir=$(sdk-directory)
+  local dir=$(sdk-directory $version)
+  if [ ! -d $dir ]; then
+    print-error "$version version is not installed yet"
+    return 1;
+  fi
+
+  # Remove previous version from the PATH
+  # if exists
+  if [[ $PATH == *$sdk_dir/*/bin* ]]; then
+    PATH=${PATH%$sdk_dir/*/bin*}$dir/bin${PATH#*$sdk_dir/*/bin}
+  else
+    PATH="$dir/bin:$PATH"
+  fi
+  export PATH
+  export DART_SDK="$dir"
+  echo "Now using dart $version"
+}
+
+uninstall() {
+  local version=$1
+  local dir=$(sdk-directory $version)
+  if [ ! -d $dir ]; then
+    return 0;
+  fi
+
+  rm -rf $dir
+  echo "Uninstalled dart $version"
+}
+
+ls-local() {
+    local pattern=$1
+    if [ ! -d $(sdk-directory) ]; then
+      echo 'N/A'
+      return 0;
+    fi
+    pushd $(sdk-directory) > /dev/null
+    ls -d $pattern* 2>/dev/null | sort -t. -u
+    popd > /dev/null
+}
+
+dvm() {
+  case "$1" in
+    "help") print-help ;;
+    "version") print-version ;;
+    "install") install $2 ;;
+    "uninstall") uninstall $2 ;;
+    "use") use $2 ;;
+    "ls") ls-local $2;;
+    "ls-remote") ls-remote $(args "channel" $@) ;;
+    * ) dvm help ;;
+  esac
+}
+
+if [ ! -d "$DVM_DIR" ]; then
+  export DVM_DIR=$(cd $(dirname ${BASH_SOURCE[0]:-$0}); pwd)
+fi
+require ./lib/args.bash
+require ./lib/os.bash
